@@ -1,0 +1,45 @@
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hero Bereich */
+.hero-section {
+  text-align: center;
+}
+
+/* Willkommen Text */
+.welcome-text {
+  font-size: 48px;
+  color: deepskyblue;
+  margin-bottom: 20px;
+  animation: fadeDown 0.8s ease;
+}
+
+/* Logo */
+.hero-logo {
+  width: 600px;
+  max-width: 90%;
+  margin-bottom: 25px;
+}
+
+/* Slogan */
+.slogan {
+  font-size: 24px;
+  letter-spacing: 5px;
+  color: blue;
+}
+
+/* Animation */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

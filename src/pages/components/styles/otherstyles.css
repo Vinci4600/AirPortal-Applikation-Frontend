@@ -1,0 +1,8 @@
+.addbutton{
+    padding: 6px 12px;
+  border: none;
+  background-color: rgb(95, 255, 47);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
