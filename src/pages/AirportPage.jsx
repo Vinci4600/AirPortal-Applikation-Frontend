@@ -9,7 +9,7 @@ function AirportPage() {
   const [country, setCountry] = useState("");
   const [iataCode, setIataCode] = useState("");
 
-  // 🔐 Token & Rolle
+ 
   const token = localStorage.getItem("token");
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
   const role = payload?.role;

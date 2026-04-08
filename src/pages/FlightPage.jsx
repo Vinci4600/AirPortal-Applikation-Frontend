@@ -1,140 +1,158 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
 function FlightPage() {
-    const [flights, setFlights] = useState([]);
-    const [flightNumber, setFlightNumber] = useState("");
-    const [departureTime, setDepartureTime] = useState("");
-    const [arrivalTime, setArrivalTime] = useState("");
+  const [flights, setFlights] = useState([]);
+  const [flightNumber, setFlightNumber] = useState("");
+  const [departureTime, setDepartureTime] = useState("");
+  const [arrivalTime, setArrivalTime] = useState("");
 
-    const fetchFlights = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:8080/api/flights/all"
-            );
-            setFlights(response.data);
-        } catch (error) {
-            console.error("Fehler beim Laden:", error);
-            alert("Fehler beim Laden der Seite bitte Stellen sie sicher das Sie auf dem Richtigem port sind")
-        }
-    };
+  
+  const token = localStorage.getItem("token");
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
+  const role = payload?.role;
 
-    useEffect(() => {
-        fetchFlights();
-    }, []);
+  
+  const fetchFlights = async () => {
+    try {
+      const response = await API.get("/flights/all"); // ✅ richtig geschrieben
+      setFlights(response.data); // ✅ richtiger State
+    } catch (error) {
+      console.error("Fehler beim Laden:", error);
+    }
+  };
 
-    // Flug hinzufügen
-    const addFlight = async () => {
+  useEffect(() => {
+    if (token) {
+      fetchFlights();
+    }
+  }, [token]);
 
-        if (!flightNumber || flightNumber.trim() === "") {
-            alert("Bitte geben Sie die Flugnummer ein.");
-            return;
-        }
-        if (!departureTime || departureTime.trim() === "") {
-            alert("Bitte geben Sie die Abflugszeit ein");
-            return;
-        }
-        if (!arrivalTime || arrivalTime.trim() === "") {
-            alert("Bitte geben Sie die Ankunftszeit ein");
-            return;
-        }
-        const departureDate = new Date(departureTime);
-        const arrivalDate = new Date(arrivalTime);
+  
+  const addFlight = async () => {
+    if (role !== "ADMIN") {
+      alert("Nur Admins dürfen hinzufügen!");
+      return;
+    }
 
+    if (!flightNumber.trim() || !departureTime || !arrivalTime) {
+      alert("Bitte alle Felder ausfüllen!");
+      return;
+    }
 
-        // Vergleich: Ankunftszeit darf nicht vor Abflugzeit sein
-        if (arrivalDate < departureDate) {
-            alert("Die Ankunftszeit darf nicht vor der Abflugszeit liegen");
-            return;
-        }
-        try {
-            await axios.post("http://localhost:8080/api/flights/add", {
-                flightNumber,
-                departureTime,
-                arrivalTime,
-            });
+    try {
+      await API.post("/flights/add", {
+        flightNumber,
+        departureTime,
+        arrivalTime,
+      });
 
-            await fetchFlights(); // warten bis neu geladen
-            setFlightNumber("");
-            setDepartureTime("");
-            setArrivalTime("");
-            alert("Flight Erfolgreich Hnzugefügt")
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen:", error.response?.data);
-            alert("Fehler beim Hinzufügen des Fluges")
-        }
-    };
+      await fetchFlights();
 
-    // Flug löschen
-    const deleteFlight = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/flights/delete/${id}`);
-            await fetchFlights(); // Liste aktualisieren
-            alert("Der Flug erfolgreich gelöscht")
-        } catch (error) {
-            console.error("Fehler beim Löschen:", error.response?.data);
-            alert("Fehler beim Löschen bitte überprüffen Sie ob Sie auf dem Port 5173 sind")
-        }
-    };
+      setFlightNumber("");
+      setDepartureTime("");
+      setArrivalTime("");
 
-    return (
-        <div className="content">
-            <h2>Neuer Flug</h2>
+      alert("Flug erfolgreich hinzugefügt");
+    } catch (error) {
+      console.error("Fehler beim Hinzufügen:", error.response?.data);
+    }
+  };
 
-            <input
-                placeholder="FlugNummer"
-                value={flightNumber}
-                onChange={(e) => setFlightNumber(e.target.value)}
-            />
+ 
+  const deleteFlight = async (id) => {
+    if (role !== "ADMIN") {
+      alert("Nur Admins dürfen löschen!");
+      return;
+    }
 
-            <input
-                type="datetime-local"
-                value={departureTime}
-                onChange={(e) => setDepartureTime(e.target.value)}
-            />
+    try {
+      await API.delete(`/flights/delete/${id}`); // ✅ API statt axios
+      await fetchFlights();
+      alert("Flug erfolgreich gelöscht");
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error.response?.data);
+    }
+  };
 
-            <input
-                type="datetime-local"
-                value={arrivalTime}
-                onChange={(e) => setArrivalTime(e.target.value)}
-            />
+  return (
+    <div className="content">
+      <h1>Flight Management</h1>
 
-            <button className="addbutton" onClick={addFlight}>Hinzufügen</button>
+      {/* 🔒 Nur Admin sieht Formular */}
+      {role === "ADMIN" && (
+        <>
+          <h2>Neuer Flug</h2>
 
-            <h2>Flights</h2>
+          <input
+            placeholder="Flugnummer"
+            value={flightNumber}
+            onChange={(e) => setFlightNumber(e.target.value)}
+          />
 
-            <table className="flight-table">
-                <thead>
-                    <tr>
-                        <th>Flightnumber</th>
-                        <th>Departure Time</th>
-                        <th>ArrivalTime</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {flights.map((f) => (
-                        <tr key={f.flight_id}>
+          <input
+            type="datetime-local"
+            value={departureTime}
+            onChange={(e) => setDepartureTime(e.target.value)}
+          />
 
-                            <td>{f.flightNumber}</td>
-                            <td>{f.departureTime}</td>
-                            <td>{f.arrivalTime}</td>
-                            <td>
-                                <button
-                                    onClick={() => deleteFlight(f.flight_id)}
-                                    style={{ marginLeft: "10px" }}
-                                >
-                                    Löschen
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+          <input
+            type="datetime-local"
+            value={arrivalTime}
+            onChange={(e) => setArrivalTime(e.target.value)}
+          />
 
-                </tbody>
-            </table>
-        </div>
-    );
+          <button className="addbutton" onClick={addFlight}>
+            Hinzufügen
+          </button>
+        </>
+      )}
+
+     
+      {!token && <p>Bitte einloggen, um Flüge zu sehen.</p>}
+
+      
+      {token && (
+        <>
+          <h2>Flights</h2>
+
+          <table className="flight-table">
+            <thead>
+              <tr>
+                <th>Flightnumber</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                {role === "ADMIN" && <th>Aktionen</th>}
+              </tr>
+            </thead>
+
+            <tbody>
+              {flights.map((f) => (
+                <tr key={f.id}>
+                  <td>{f.flightNumber}</td>
+                  <td>{f.departureTime}</td>
+                  <td>{f.arrivalTime}</td>
+
+                  {role === "ADMIN" && (
+                    <td>
+                      <button
+                        onClick={() => deleteFlight(f.id)}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Löschen
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  );
 }
 
 export default FlightPage;
