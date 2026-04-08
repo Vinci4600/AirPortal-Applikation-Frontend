@@ -2,6 +2,8 @@ import { useState } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
 import "./components/styles/otherstyles.css";
+import "./components/styles/home.css";
+import "./components/styles/home.css";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -26,6 +28,7 @@ function LoginPage() {
   return (
     
     <div className="content">
+       <div className="home-container">
       <h1>Login</h1>
 
       <input
@@ -42,6 +45,7 @@ function LoginPage() {
       />
 
       <button onClick={handleLogin}>Login</button>
+      </div>
     </div>
   );
 }

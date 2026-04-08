@@ -81,7 +81,9 @@ function LogisticUserPage(){
     };
 
      return (
+        
         <div className="content">
+             
             <h2>Neuer Logistic User</h2>
 
             <input
@@ -142,7 +144,8 @@ function LogisticUserPage(){
 
                 </tbody>
             </table>
-        </div>
+            </div>
+        
     );
 
 
