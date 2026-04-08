@@ -19,8 +19,8 @@ function LogisticUserPage() {
   const fetchLogisticUsers = async () => {
     try {
       const response = await API.get("/logisticUser/all");
-      setLogisticUsers(response.data);
-       } catch (error) { 
+      setLogisticUsers(response.data); // 
+    } catch (error) {
       console.error("Fehler beim Laden:", error);
     }
   };
