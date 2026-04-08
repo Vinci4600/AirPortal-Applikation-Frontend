@@ -5,35 +5,83 @@ import FlightPage from "./pages/FlightPage";
 import AirportPage from "./pages/AirportPage";
 import PassengerPage from "./pages/PassengerPage";
 import LogisticUserPage from "./pages/LogisticUserPage";
-import logo from "./assets/Airportal.png"; 
+import logo from "./assets/Airportal.png";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-
-
-
+/* Alte Version für Notfall behalten
 function App() {
-  
+
   return (
     <BrowserRouter>
       <nav>
-         <img src={logo} alt="AirPortal Logo" style={{ height: "50px" }} />
+        <img src={logo} alt="AirPortal Logo" style={{ height: "50px" }} />
         <Link to="/">Home</Link> |{" "}
         <Link to="/aircraft">Aircraft</Link>|{""}
         <Link to="/flights">Flights</Link>|{""}
         <Link to="/airports">Airports</Link>|{""}
         <Link to="/passengers">Passengers</Link>|{""}
         <Link to="/logisticUser">Logistic Users</Link>
+        <button onClick={() => {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }}>
+          Logout
+        </button>
       </nav>
-<div class="content">
-      <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/aircraft" element={<AircraftPage />} />
-  <Route path="/flights" element={<FlightPage />}/>
-  <Route path="/airports" element={<AirportPage/>}/>
-  <Route path="/passengers" element={<PassengerPage/>}/>
-  <Route path="/logisticUser" element={<LogisticUserPage/>}/>
-</Routes>
-</div>
+      <div class="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
 
+          <Route
+            path="/aircraft"
+            element={
+              <ProtectedRoute>
+                <AircraftPage />
+              </ProtectedRoute>
+            }
+          />
+*/
+
+function App() {
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload(); // Seite neu laden, Rolle aktualisieren
+  };
+
+  return (
+    <BrowserRouter>
+      {/* Neue dynamische Navigation */}
+      <nav>
+        <img src={logo} alt="AirPortal Logo" style={{ height: "50px" }} />
+        <Link to="/">Home</Link>
+        {token && <> | <Link to="/aircraft">Aircraft</Link></>}
+        {token && <> | <Link to="/flights">Flights</Link></>}
+        {token && <> | <Link to="/airports">Airports</Link></>}
+        {token && <> | <Link to="/passengers">Passengers</Link></>}
+        {token && <> | <Link to="/logisticUser">Logistic Users</Link></>}
+        {token ? (
+          <> | <button onClick={handleLogout}>Logout</button></>
+        ) : (
+          <> | <Link to="/login">Login</Link></>
+        )}
+      </nav>
+
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Nur sichtbar, wenn eingeloggt */}
+          {token && <Route path="/aircraft" element={<AircraftPage />} />}
+          {token && <Route path="/flights" element={<FlightPage />} />}
+          {token && <Route path="/airports" element={<AirportPage />} />}
+          {token && <Route path="/passengers" element={<PassengerPage />} />}
+          {token && <Route path="/logisticUser" element={<LogisticUserPage />} />}
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }
