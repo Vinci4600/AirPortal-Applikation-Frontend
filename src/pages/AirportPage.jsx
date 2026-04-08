@@ -11,8 +11,7 @@ function AirportPage() {
 
  
   const token = localStorage.getItem("token");
-  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const role = payload?.role;
+  const role = localStorage.getItem("role");
 
   // 🌍 GET Airports
   const fetchAirports = async () => {

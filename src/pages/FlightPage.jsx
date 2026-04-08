@@ -9,16 +9,24 @@ function FlightPage() {
   const [departureTime, setDepartureTime] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
 
-  
   const token = localStorage.getItem("token");
-  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const role = payload?.role;
 
-  
+  // 🔒 Sicheres Token-Decoding
+  let role = null;
+  try {
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      role = payload.role;
+    }
+  } catch (e) {
+    console.error("Token fehlerhaft");
+  }
+
+  // 📥 Flights laden
   const fetchFlights = async () => {
     try {
-      const response = await API.get("/flights/all"); 
-      setFlights(response.data); 
+      const response = await API.get("/flights/all");
+      setFlights(response.data);
     } catch (error) {
       console.error("Fehler beim Laden:", error);
     }
@@ -30,7 +38,7 @@ function FlightPage() {
     }
   }, [token]);
 
-  
+  // ➕ Flug hinzufügen
   const addFlight = async () => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen hinzufügen!");
@@ -61,7 +69,7 @@ function FlightPage() {
     }
   };
 
- 
+  // 🗑️ Flug löschen
   const deleteFlight = async (id) => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen löschen!");
@@ -69,7 +77,7 @@ function FlightPage() {
     }
 
     try {
-      await API.delete(`/flights/delete/${id}`); // ✅ API statt axios
+      await API.delete(`/flights/delete/${id}`);
       await fetchFlights();
       alert("Flug erfolgreich gelöscht");
     } catch (error) {
@@ -81,7 +89,7 @@ function FlightPage() {
     <div className="content">
       <h1>Flight Management</h1>
 
-      {/* 🔒 Nur Admin sieht Formular */}
+      {/* 🔒 Nur Admin */}
       {role === "ADMIN" && (
         <>
           <h2>Neuer Flug</h2>
@@ -110,10 +118,8 @@ function FlightPage() {
         </>
       )}
 
-     
       {!token && <p>Bitte einloggen, um Flüge zu sehen.</p>}
 
-      
       {token && (
         <>
           <h2>Flights</h2>
@@ -132,8 +138,10 @@ function FlightPage() {
               {flights.map((f) => (
                 <tr key={f.id}>
                   <td>{f.flightNumber}</td>
-                  <td>{f.departureTime}</td>
-                  <td>{f.arrivalTime}</td>
+
+                  {/* 🔥 Schönes Datum */}
+                  <td>{new Date(f.departureTime).toLocaleString()}</td>
+                  <td>{new Date(f.arrivalTime).toLocaleString()}</td>
 
                   {role === "ADMIN" && (
                     <td>

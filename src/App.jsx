@@ -47,7 +47,7 @@ function App() {
   const token = localStorage.getItem("token");
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+   localStorage.clear();
     window.location.reload(); // Seite neu laden, Rolle aktualisieren
   };
 
