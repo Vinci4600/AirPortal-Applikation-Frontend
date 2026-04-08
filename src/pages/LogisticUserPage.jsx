@@ -1,154 +1,176 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
-function LogisticUserPage(){
-    const[logisticUsers,setLogisticUsers]=useState([]);
-    const[firstname,setFirstname]= useState("");
-    const[lastname,setLastname] = useState("");
-    const[email,setEmail] = useState("");
-    const[createDate,setCreateDate] = useState("");
+function LogisticUserPage() {
+  const [logisticUsers, setLogisticUsers] = useState([]);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [createDate, setCreateDate] = useState("");
 
-     const fetchLogisticUser = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:8080/api/logisticUser/all"
-            );
-            setLogisticUsers(response.data);
-        } catch (error) {
-            console.error("Fehler beim Laden:", error);
-            alert("Fehler beim verbinden Mit der datenbank Keine Zugriffs Erlaubnis ");
-        }
-    };
-    useEffect(() => {
-        fetchLogisticUser();
-    }, []);
+  //  Token und Rolle
+  const token = localStorage.getItem("token");
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
+  const role = payload?.role;
 
-    const addLogisticUser = async () => {
+  //  GET Users
+  const fetchLogisticUsers = async () => {
+    try {
+      const response = await API.get("/logisticUser/all");
+      setLogisticUsers(response.data); // ✅ richtig
+    } catch (error) {
+      console.error("Fehler beim Laden:", error);
+    }
+  };
 
-        if (!firstname || firstname.trim() === "") {
-            alert("Bitte geben Sie den Vornamen ein.");
-            return;
-        }
-        if (!lastname || lastname.trim() === "") {
-            alert("Bitte geben Sie den Nachnamen ein.");
-            return;
-        }
-        if (!email || email.trim() === "") {
-            alert("Bitte geben Sie eine E-Mail-Adresse ein.");
-            return; // Abbrechen, wenn keine E-Mail vorhanden ist
-        }
-        // Überprüfung des E-Mail-Formats mit Regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
-            return;
-        }
-        if (!createDate || createDate.trim() === "") {
-            alert("Bitte geben Sie ein Datum ein");
-            return; // Abbrechen, wenn keine E-Mail vorhanden ist
-        }
+  useEffect(() => {
+    if (token) {
+      fetchLogisticUsers();
+    }
+  }, [token]);
 
-        try {
-            await axios.post("http://localhost:8080/api/logisticUser/add", {
-                firstname,
-                lastname,
-                email,
-                createDate,
-            });
+  //  ADD nur Admin
+  const addLogisticUser = async () => {
+    if (role !== "ADMIN") {//Role darf nur admin sein
+      alert("Nur Admins dürfen hinzufügen!");
+      return;
+    }
 
-            await fetchLogisticUser(); // warten bis neu geladen
-            setFirstname("");
-            setLastname("");
-            setEmail("");
-            setCreateDate("");
-            alert("Logistic User Erfolgreich Hinzugefügt")
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen:", error.response?.data);
-            alert("Fehler beim Hinzufügen des Logistic Users")
-        }
-    };
-     const deleteLogisticUser = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/logisticUser/delete/${id}`);
-            await fetchLogisticUser(); // Liste aktualisieren
-            alert("Logistic User Erfolgreich Gelöscht")
-        } catch (error) {
-            console.error("Fehler beim Löschen:", error.response?.data);
-            alert("Fehler beim Löschen des Logistic Users Bitte an den Support wenden" )
-        }
-    };
+    if (!firstname.trim() || !lastname.trim() || !email.trim() || !createDate) {
+      alert("Bitte alle Felder ausfüllen!");
+      return;
+    }
 
-     return (
-        
-        <div className="content">
-             
-            <h2>Neuer Logistic User</h2>
+    // Email validieren
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Bitte gültige E-Mail eingeben!");
+      return;
+    }
 
-            <input
-                placeholder="Firstname"
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
-            />
+    try {
+      await API.post("/logisticUser/add", {
+        firstname,
+        lastname,
+        email,
+        createDate,
+      });
 
-            <input
-                placeholder="Lastname"
-                value={lastname}
-                onChange={(e) => setLastname(e.target.value)}
-            />
+      await fetchLogisticUsers();
 
-             <input
-                placeholder="E-Mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+      setFirstname("");
+      setLastname("");
+      setEmail("");
+      setCreateDate("");
 
-            <input
-                type="datetime-local"
-                value={createDate}
-                onChange={(e) => setCreateDate(e.target.value)}
-            />
+      alert("User erfolgreich hinzugefügt");
+    } catch (error) {
+      console.error("Fehler beim Hinzufügen:", error.response?.data);
+    }
+  };
 
-            <button className="addbutton" onClick={addLogisticUser}>Hinzufügen</button>
+  //  DELETE nur Admin
+  const deleteLogisticUser = async (id) => {
+    if (role !== "ADMIN") {//== ADMIN nur die rolle admin hat zugriff
+      alert("Nur Admins dürfen löschen!");
+      return;
+    }
 
-            <h2>Logistic Users</h2>
+    try {
+      await API.delete(`/logisticUser/delete/${id}`);
+      await fetchLogisticUsers();
+      alert("User erfolgreich gelöscht");
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error.response?.data);
+    }
+  };
 
-            <table className="logisticUser-table">
-                <thead>
-                    <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>E-Mail</th>
-                        <th>Create Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {logisticUsers.map((l) => (
-                        <tr key={l.id}>
+  return (
+    <div className="content">
+      <h1>Logistic User Management</h1>
 
-                            <td>{l.firstname}</td>
-                            <td>{l.lastname}</td>
-                            <td>{l.email}</td>
-                            <td>{l.createDate}</td>
-                            <td>
-                                <button
-                                    onClick={() => deleteLogisticUser(l.id)}
-                                    style={{ marginLeft: "10px" }}
-                                >
-                                    Löschen
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+      
+      {role === "ADMIN" && (
+        <>
+          <h2>Neuer Logistic User</h2>
 
-                </tbody>
-            </table>
-            </div>
-        
-    );
+          <input
+            placeholder="Firstname"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+          />
 
+          <input
+            placeholder="Lastname"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+          />
 
+          <input
+            placeholder="E-Mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
+          <input
+            type="datetime-local"
+            value={createDate}
+            onChange={(e) => setCreateDate(e.target.value)}
+          />
+
+          <button className="addbutton" onClick={addLogisticUser}>
+            Hinzufügen
+          </button>
+        </>
+      )}
+
+     
+      {!token && <p>Bitte einloggen, um User zu sehen.</p>}
+
+     
+      {token && (
+        <>
+          <h2>Logistic Users</h2>
+
+          <table className="logisticUser-table">
+            <thead>
+              <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>E-Mail</th>
+                <th>Create Date</th>
+                {role === "ADMIN" && <th>Aktionen</th>}
+              </tr>
+            </thead>
+
+            <tbody>
+              {logisticUsers.map((l) => (
+                <tr key={l.id}>
+                  <td>{l.firstname}</td>
+                  <td>{l.lastname}</td>
+                  <td>{l.email}</td>
+                  <td>{l.createDate}</td>
+
+                  {role === "ADMIN" && (
+                    <td>
+                      <button
+                        onClick={() => deleteLogisticUser(l.id)}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Löschen
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  );
 }
+
 export default LogisticUserPage;

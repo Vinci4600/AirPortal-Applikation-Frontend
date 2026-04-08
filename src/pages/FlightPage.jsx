@@ -17,8 +17,8 @@ function FlightPage() {
   
   const fetchFlights = async () => {
     try {
-      const response = await API.get("/flights/all"); // ✅ richtig geschrieben
-      setFlights(response.data); // ✅ richtiger State
+      const response = await API.get("/flights/all"); 
+      setFlights(response.data); 
     } catch (error) {
       console.error("Fehler beim Laden:", error);
     }
