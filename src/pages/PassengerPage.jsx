@@ -1,136 +1,161 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
 function PassengerPage() {
-    const [passengers, setPassengers] = useState([]);
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [email, setEmail] = useState("");
+  const [passengers, setPassengers] = useState([]);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
 
-    const fetchPassengers = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:8080/api/passengers/all"
-            );
+  // Token & Rolle
+  const token = localStorage.getItem("token");
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
+  const role = payload?.role;
 
-            setPassengers(response.data);
-        } catch (error) {
-            console.error("Fehler beim Laden:", error);
-        }
-    };
-    useEffect(() => {
-        fetchPassengers();
-    }, []);
+  //  GET
+  const fetchPassengers = async () => {
+    try {
+      const response = await API.get("/passengers/all");
+      setPassengers(response.data);
+    } catch (error) {
+      console.error("Fehler beim Laden:", error);
+    }
+  };
 
-    const deletePassenger = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/passengers/delete/${id}`);
-            await fetchPassengers(); // Liste aktualisieren
-            alert("Passenger erfolgreich Gelöscht ");
-        } catch (error) {
-            console.error("Fehler beim Löschen:", error.response?.data);
-            alert("Fehler beim Löschen des Passengers ");
-        }
-    };
+  useEffect(() => {
+    if (token) {
+      fetchPassengers();
+    }
+  }, [token]);
 
-    const addPassenger = async () => {
+  //  DELETE
+  const deletePassenger = async (id) => {
+    if (role !== "ADMIN") {
+      alert("Nur Admins dürfen löschen!");
+      return;
+    }
 
-        // Überprüfung, ob Vorname und Nachname eingegeben wurden
-        if (!firstname || firstname.trim() === "") {
-            alert("Bitte geben Sie den Vornamen ein.");
-            return;
-        }
-        if (!lastname || lastname.trim() === "") {
-            alert("Bitte geben Sie den Nachnamen ein.");
-            return;
-        }
-        if (!email || email.trim() === "") {
-            alert("Bitte geben Sie eine E-Mail-Adresse ein.");
-            return; // Abbrechen, wenn keine E-Mail vorhanden ist
-        }
-        // Überprüfung des E-Mail-Formats mit Regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
-            return;
-        }
+    try {
+      await API.delete(`/passengers/delete/${id}`);
+      await fetchPassengers();
+      alert("Passenger erfolgreich gelöscht");
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error.response?.data);
+    }
+  };
 
-        try {
-            await axios.post("http://localhost:8080/api/passengers/add", {
-                firstname,
-                lastname,
-                email,
-            });
+  //  ADD
+  const addPassenger = async () => {
+    if (role !== "ADMIN") {
+      alert("Nur Admins dürfen hinzufügen!");
+      return;
+    }
 
-            await fetchPassengers(); // warten bis neu geladen
-            setFirstname("");
-            setLastname("");
-            setEmail("");
-            alert("Passenger erfolgreich hinzugefügt ");
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen:", error.response?.data);
-            alert("Fehler beim Hinzufügen des Passengers ");
-        }
-    };
+    if (!firstname.trim() || !lastname.trim() || !email.trim()) {
+      alert("Bitte alle Felder ausfüllen!");
+      return;
+    }
 
-    return (
-        <div className="content">
-            <h2>New Passenger</h2>
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Bitte gültige E-Mail eingeben!");
+      return;
+    }
 
-            <input
-                placeholder="Firstname"
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
-            />
+    try {
+      await API.post("/passengers/add", {
+        firstname,
+        lastname,
+        email,
+      });
 
-            <input
-                placeholder="Lastname"
-                value={lastname}
-                onChange={(e) => setLastname(e.target.value)}
-            />
+      await fetchPassengers();
 
-            <input
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+      setFirstname("");
+      setLastname("");
+      setEmail("");
 
-            <button className="addbutton" onClick={addPassenger}>Hinzufügen</button>
+      alert("Passenger erfolgreich hinzugefügt");
+    } catch (error) {
+      console.error("Fehler beim Hinzufügen:", error.response?.data);
+    }
+  };
 
-            <h2>Passengers</h2>
+  return (
+    <div className="content">
+      <h1>Passenger Management</h1>
 
-            <table className="Passenger-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>E-Mail</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {passengers.map((p, index) => (
-                        <tr key={p.id}>
-                            <td>{index + 1}</td>   {/* fortlaufende Nummer */}
-                            <td>{p.firstname}</td>
-                            <td>{p.lastname}</td>
-                            <td>{p.email}</td>
-                            <td>
-                                <button
-                                    onClick={() => deletePassenger(p.id)}
-                                    style={{ marginLeft: "10px" }}
-                                >
-                                    Löschen
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+     
+      {role === "ADMIN" && (
+        <>
+          <h2>New Passenger</h2>
+
+          <input
+            placeholder="Firstname"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+          />
+
+          <input
+            placeholder="Lastname"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+          />
+
+          <input
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <button className="addbutton" onClick={addPassenger}>
+            Hinzufügen
+          </button>
+        </>
+      )}
+
+      {!token && <p>Bitte einloggen.</p>}
+
+      {token && (
+        <>
+          <h2>Passengers</h2>
+
+          <table className="Passenger-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>E-Mail</th>
+                {role === "ADMIN" && <th>Aktionen</th>}
+              </tr>
+            </thead>
+
+            <tbody>
+              {passengers.map((p, index) => (
+                <tr key={p.id}>
+                  <td>{index + 1}</td>
+                  <td>{p.firstname}</td>
+                  <td>{p.lastname}</td>
+                  <td>{p.email}</td>
+
+                  {role === "ADMIN" && (
+                    <td>
+                      <button onClick={() => deletePassenger(p.id)}>
+                        Löschen
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  );
 }
 
 export default PassengerPage;
