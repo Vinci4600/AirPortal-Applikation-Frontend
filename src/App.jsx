@@ -12,18 +12,18 @@ import LoginPage from "./pages/LoginPage";
 import logo from "./assets/Airportal.png";
 
 function App() {
-  //  STATE
+  
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  // Logout
+  
   const handleLogout = () => {
     localStorage.clear();
-    setToken(null); // Nav Sofortiges Update
+    setToken(null); //  wichtig → Navbar updated sofort
   };
 
   return (
     <BrowserRouter>
-      {/*  Navigation */}
+      
       <nav>
         <img src={logo} alt="AirPortal Logo" style={{ height: "50px" }} />
 
@@ -42,15 +42,15 @@ function App() {
         )}
       </nav>
 
-      {/*  ROUTES */}
+      
       <div className="content">
         <Routes>
           <Route path="/" element={<Home />} />
 
-          {/*  setToken wird übergeben */}
+         
           <Route path="/login" element={<LoginPage setToken={setToken} />} />
 
-          {/*  Nur wenn eingeloggt */}
+          
           {token && <Route path="/aircraft" element={<AircraftPage />} />}
           {token && <Route path="/flights" element={<FlightPage />} />}
           {token && <Route path="/airports" element={<AirportPage />} />}

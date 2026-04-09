@@ -51,7 +51,7 @@ function LogisticUserPage() {
     }
 
     try {
-      await API.post("/logisticUser/add", {
+      await API.post("/logistic_users/add", {
         firstname,
         lastname,
         email,
@@ -79,7 +79,7 @@ function LogisticUserPage() {
     }
 
     try {
-      await API.delete(`/logisticUser/delete/${id}`);
+      await API.delete(`/logistic_users/delete/${id}`);
       await fetchLogisticUsers();
       alert("User erfolgreich gelöscht");
     } catch (error) {
