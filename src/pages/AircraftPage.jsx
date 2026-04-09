@@ -14,10 +14,15 @@ function AircraftPage() {
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
   const role = payload?.role; // 'USER' oder 'ADMIN'
 
-  // Alle Aircraft laden (nur wenn eingeloggt)
+  // ✅ Alle Aircraft laden (nur wenn eingeloggt)
   const fetchAircrafts = async () => {
     try {
-      const response = await API.get("/aircraft/all");
+      // 🔑 Token im Header mitsenden
+      const response = await API.get("/aircrafts/all", {
+        headers: {
+          Authorization: `Bearer ${token}`, // ← WICHTIG für Spring Security
+        },
+      });
       setAircrafts(response.data);
     } catch (error) {
       console.error("Fehler beim Laden der Aircrafts:", error);
@@ -49,7 +54,16 @@ function AircraftPage() {
     }
 
     try {
-      await API.post("/aircraft/add", { model, manufacture, gewicht });
+      // 🔑 Token im Header mitsenden
+      await API.post(
+        "/aircrafts/add",
+        { model, manufacture, gewicht },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ← WICHTIG für Spring Security
+          },
+        }
+      );
       await fetchAircrafts();
 
       // Felder leeren
@@ -69,7 +83,12 @@ function AircraftPage() {
     }
 
     try {
-      await API.delete(`/aircraft/delete/${id}`);
+      // 🔑 Token im Header mitsenden
+      await API.delete(`/aircrafts/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ← WICHTIG für Spring Security
+        },
+      });
       await fetchAircrafts();
       alert("Flugzeug erfolgreich gelöscht");
     } catch (error) {
