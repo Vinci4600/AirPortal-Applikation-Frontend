@@ -5,7 +5,7 @@ import "./components/styles/otherstyles.css";
 import "./components/styles/home.css";
 
 
-function LoginPage() {
+function LoginPage({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -16,21 +16,21 @@ function LoginPage() {
         usernameOrEmail: username,
         password: password,
       });
-localStorage.setItem("token", res.data.token);
-localStorage.setItem("role", res.data.role);
-localStorage.setItem("username", res.data.username);
-      
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("username", res.data.username);
+      setToken(res.data.token);
 
       navigate("/aircraft"); // nach login weiterleiten
     } catch (err) {
-  console.error(err.response?.data);
+      console.error(err.response?.data);
 
-  if (err.response?.status === 401) {
-    alert("Falscher Username oder Passwort");
-  } else {
-    alert("Serverfehler beim Login");
-  }
-}
+      if (err.response?.status === 401) {
+        alert("Falscher Username oder Passwort");
+      } else {
+        alert("Serverfehler beim Login");
+      }
+    }
   };
 
   return (
