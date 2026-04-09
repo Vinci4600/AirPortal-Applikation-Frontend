@@ -19,7 +19,7 @@ function FlightPage() {
 
   const token = localStorage.getItem("token");
 
-  // 🔒 Token und Rolle prüfen
+  //  Token und Rolle prüfen
   let role = null;
   try {
     if (token) {
@@ -31,7 +31,7 @@ function FlightPage() {
   }
   console.log("ROLE:", role);
 
-  // 📥 Flights laden
+  //  Flights laden
   const fetchFlights = async () => {
     try {
       const response = await API.get("/flights/all");
@@ -41,7 +41,7 @@ function FlightPage() {
     }
   };
 
-  // 📥 Dropdown-Daten laden
+  //  Dropdown-Daten laden
   const fetchDropdownData = async () => {
     try {
       const [aircraftRes, airportRes, logisticRes] = await Promise.all([
@@ -64,7 +64,7 @@ function FlightPage() {
     }
   }, [token]);
 
-  // ➕ Flug hinzufügen
+  //  Flug hinzufügen
   const addFlight = async () => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen hinzufügen!");
@@ -113,7 +113,7 @@ function FlightPage() {
     }
   };
 
-  // 🗑️ Flug löschen
+  //  Flug löschen
   const deleteFlight = async (id) => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen löschen!");
@@ -133,7 +133,7 @@ function FlightPage() {
     <div className="content">
       <h1>Flight Management</h1>
 
-      {/* 🔒 Nur Admin */}
+      {/*  Nur Admin */}
       {role === "ADMIN" && (
         <>
           <h2>Neuer Flug</h2>

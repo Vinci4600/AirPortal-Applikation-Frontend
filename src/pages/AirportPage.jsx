@@ -13,7 +13,7 @@ function AirportPage() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  // 🌍 GET Airports
+  //  GET Airports
   const fetchAirports = async () => {
     try {
       const response = await API.get("/airports/all");
@@ -29,7 +29,7 @@ function AirportPage() {
     }
   }, [token]);
 
-  // ❌ DELETE (nur Admin)
+  //  DELETE (nur Admin)
   const deleteAirport = async (id) => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen löschen!");
@@ -45,7 +45,7 @@ function AirportPage() {
     }
   };
 
-  // ➕ ADD (nur Admin)
+  //  ADD (nur Admin)
   const addAirport = async () => {
     if (role !== "ADMIN") {
       alert("Nur Admins dürfen hinzufügen!");
@@ -80,7 +80,7 @@ function AirportPage() {
     <div className="content">
       <h1>Airport Management</h1>
 
-      {/* 🔒 Nur Admin sieht Formular */}
+      {/*  Nur Admin sieht Formular */}
       {role === "ADMIN" && (
         <>
           <h2>New Airport</h2>
@@ -109,10 +109,10 @@ function AirportPage() {
         </>
       )}
 
-      {/* ❗ Nicht eingeloggt */}
+      {/*  Nicht eingeloggt */}
       {!token && <p>Bitte einloggen, um Airports zu sehen.</p>}
 
-      {/* 📊 Tabelle für User + Admin */}
+      {/*  Tabelle für User + Admin */}
       {token && (
         <>
           <h2>Airports</h2>

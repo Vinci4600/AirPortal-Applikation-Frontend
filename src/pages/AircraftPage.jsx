@@ -14,10 +14,10 @@ function AircraftPage() {
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
   const role = payload?.role; // 'USER' oder 'ADMIN'
 
-  // ✅ Alle Aircraft laden (nur wenn eingeloggt)
+  //  Alle Aircraft laden (nur wenn eingeloggt)
   const fetchAircrafts = async () => {
     try {
-      // 🔑 Token im Header mitsenden
+      //  Token im Header mitsenden
       const response = await API.get("/aircrafts/all", {
         headers: {
           Authorization: `Bearer ${token}`, // ← WICHTIG für Spring Security
@@ -54,7 +54,7 @@ function AircraftPage() {
     }
 
     try {
-      // 🔑 Token im Header mitsenden
+      //  Token im Header mitsenden
       await API.post(
         "/aircrafts/add",
         { model, manufacture, gewicht },
@@ -83,7 +83,7 @@ function AircraftPage() {
     }
 
     try {
-      // 🔑 Token im Header mitsenden
+      //  Token im Header mitsenden
       await API.delete(`/aircrafts/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // ← WICHTIG für Spring Security
@@ -100,7 +100,7 @@ function AircraftPage() {
     <div className="content">
       <h1>Aircraft Management</h1>
 
-      {/* Admin: Hinzufügen */}
+
       {role === "ADMIN" && (
         <>
           <h2>New Aircraft</h2>
@@ -125,7 +125,7 @@ function AircraftPage() {
         </>
       )}
 
-      {/* Nicht eingeloggte User */}
+
       {!token && <p>Bitte einloggen, um Aircrafts sehen zu können.</p>}
 
       {/* Tabelle für User/Admin */}
