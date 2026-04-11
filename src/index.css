@@ -80,14 +80,23 @@ nav {
   text-align: center;
 }
 nav {
-  background-color: #1e3a8a; /* schönes Blau */
+  position: fixed;       /* bleibt oben */
+  top: 0;
+  left: 0;
+  width: 100%;           /* volle Breite */
+
+  background-color: #1e3a8a;
   padding: 12px 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+
   display: flex;
-  gap: 20px;
+  justify-content: center; /* Inhalt mittig */
   align-items: center;
-  
+  gap: 20px;
+
+  z-index: 1000;
+
+  border-radius: 0;      /* KEINE runden Ecken */
+  margin-bottom: 0;      /* kein Abstand */
 }
 
 /* Link Styling */

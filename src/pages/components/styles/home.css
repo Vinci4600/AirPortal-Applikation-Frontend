@@ -1,7 +1,7 @@
 .home-container {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
+  /* Horizontal */
   align-items: center;
 }
 
@@ -38,15 +38,33 @@
     opacity: 0;
     transform: translateY(-15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-.loginbox{
+
+.loginbox {
   text-align: center;
   max-width: 800px;
   margin: auto;
   padding: 20px;
   background-color: white;
+}
+
+.containert {
+  
+  width: 100%;
+  padding: 15vh 10vw;
+ 
+  
+  
+  z-index: 1000;
+  text-align: center;
+  display: flex;
+  justify-content: center; /* horizontale Zentrierung */
+  align-items: center; /* vertikale Zentrierung */
+  height: 100vh; /* volle Höhe des Viewports */
+  margin: 0; /* keine Standard-Margin */
 }

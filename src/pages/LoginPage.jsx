@@ -36,7 +36,7 @@ function LoginPage({ setToken }) {
   return (
 
 
-    <div className="home-container">
+    <div className="containert">
       <div className="login-container">
         <div className="login-box">
           <h1>Login</h1>
@@ -56,9 +56,11 @@ function LoginPage({ setToken }) {
           />
 
           <button onClick={handleLogin}>Login</button>
+          <a href="RegistrierungPage.jsx">Jetzt Registrieren</a>
         </div>
       </div>
-    </div>
+      </div>
+    
 
 
 

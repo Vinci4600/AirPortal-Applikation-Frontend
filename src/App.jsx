@@ -9,16 +9,19 @@ import PassengerPage from "./pages/PassengerPage";
 import LogisticUserPage from "./pages/LogisticUserPage";
 import LoginPage from "./pages/LoginPage";
 
+
 import logo from "./assets/Airportal.png";
 
 function App() {
   
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+
   
   const handleLogout = () => {
     localStorage.clear();
-    setToken(null); //  wichtig → Navbar updated sofort
+    setToken(null);
+    navigate("/login");  //  weiter leitung zu nach dem Abmelden
   };
 
   return (
