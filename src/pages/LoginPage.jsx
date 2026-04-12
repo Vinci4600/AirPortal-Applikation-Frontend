@@ -3,6 +3,10 @@ import API from "../api";
 import { useNavigate } from "react-router-dom";
 import "./components/styles/otherstyles.css";
 import "./components/styles/home.css";
+import { Link } from "react-router-dom";
+
+
+
 
 
 function LoginPage({ setToken }) {
@@ -56,11 +60,13 @@ function LoginPage({ setToken }) {
           />
 
           <button onClick={handleLogin}>Login</button>
-          <a href="RegistrierungPage.jsx">Jetzt Registrieren</a>
+
+
+          <Link to="/register">Jetzt Registrieren</Link>
         </div>
       </div>
-      </div>
-    
+    </div>
+
 
 
 
