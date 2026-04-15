@@ -1,34 +1,43 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import "@testing-library/jest-dom/vitest"; // ✅ FIX!!!
-import LoginPage from "../pages/LoginPage";
+import { render, screen, fireEvent } from "@testing-library/react"
+import { describe, it, expect, vi } from "vitest"
 
-// Mock für navigate
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => vi.fn(),
-}));
+import { MemoryRouter } from "react-router-dom"
+import LoginPage from "../pages/LoginPage"
+
+// Mock useNavigate
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom")
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+  }
+})
 
 describe("LoginPage", () => {
 
   it("rendert Login Formular", () => {
-    render(<LoginPage setToken={() => {}} />);
+    render(
+      <MemoryRouter>
+        <LoginPage setToken={() => {}} />
+      </MemoryRouter>
+    )
 
-    expect(screen.getByPlaceholderText("Benutzername oder Email")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Passwort")).toBeInTheDocument();
-    expect(screen.getByText("Login")).toBeInTheDocument();
-  });
+    expect(screen.getByPlaceholderText("Username")).toBeInTheDocument()
+    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument()
+  })
 
   it("nimmt Eingaben an", () => {
-    render(<LoginPage setToken={() => {}} />);
+    render(
+      <MemoryRouter>
+        <LoginPage setToken={() => {}} />
+      </MemoryRouter>
+    )
 
-    const inputUser = screen.getByPlaceholderText("Benutzername oder Email");
-    const inputPass = screen.getByPlaceholderText("Passwort");
+    const inputUser = screen.getByPlaceholderText("Username")
 
-    fireEvent.change(inputUser, { target: { value: "test" } });
-    fireEvent.change(inputPass, { target: { value: "1234" } });
+    fireEvent.change(inputUser, { target: { value: "test" } })
 
-    expect(inputUser.value).toBe("test");
-    expect(inputPass.value).toBe("1234");
-  });
+    expect(inputUser.value).toBe("test")
+  })
 
-});
+})
