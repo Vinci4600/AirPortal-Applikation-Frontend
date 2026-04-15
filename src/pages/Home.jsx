@@ -46,7 +46,7 @@ function Home() {
   }, []);
 
   return (
-    <div className="home-container">
+    <div className="containert">
       <div className="hero-section">
 
         <h1 className="welcome-text" key={welcomeIndex}>
