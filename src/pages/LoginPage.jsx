@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 
 
-
+// Token
 function LoginPage({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +30,9 @@ function LoginPage({ setToken }) {
       console.error(err.response?.data);
 
       if (err.response?.status === 401) {
-        alert("Falscher Username oder Passwort");
+        alert("Falscher Username oder Passwort");// Feheler meldung wegen Passwort
       } else {
-        alert("Serverfehler beim Login");
+        alert("Serverfehler beim Login");// Fehlermeldung wegen server
       }
     }
   };
