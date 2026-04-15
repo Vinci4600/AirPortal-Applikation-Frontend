@@ -26,6 +26,7 @@ function RegistrierungPage() {
       navigate("/login"); // Beispiel: Weiterleitung zur Login-Seite
     } catch (error) {
       console.error("Fehler bei der Registrierung:", error);
+      alert("Bitte Prüfen sie ob ihr paswort 8 zeichen Lang ist ud die E-MAil adresse stimmt");
       
     }
   };
