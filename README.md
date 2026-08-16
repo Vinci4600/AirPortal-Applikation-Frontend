@@ -1,1 +1,45 @@
+# AirPortal
+
+## Beschreibung
+AirPortal ist eine Webanwendung zur Verwaltung und Organisation von Flugzeugen, Flügen und Flughäfen. Die Anwendung ermöglicht das Erstellen, Bearbeiten und Löschen von Flugzeugen sowie das Anlegen und Zuordnen von Flügen.
+Die Kommunikation zwischen Frontend und Backend erfolgt über eine REST-API, über die die Daten verarbeitet und gespeichert werden. Das Frontend stellt die vorhandenen Daten übersichtlich dar und ermöglicht die Interaktion mit der Anwendung.
+
+AirPortal entstand als modulübergreifendes Projekt der Module 295, 294 und 223.
+
+## Ausführung Airportal
+### 1. Projekt herunterladen
+Das Repository klonen oder die ZIP-Datei herunterladen. Dabei werden sowohl das Frontend als auch das Backend benötigt.
+<img width="1119" height="554" alt="image" src="https://github.com/user-attachments/assets/d34510ac-225a-4c9d-8572-9fe6eb48d00d" />
+### 2. ZIP-Datei extrahieren
+Falls das Projekt als ZIP-Datei heruntergeladen wurde, beide Projektordner extrahieren.
+<img width="836" height="200" alt="image" src="https://github.com/user-attachments/assets/e52d6fe7-02ca-4353-b6cd-665d4243fb41" />
+### 3. Backend öffnen
+Das Backend in einer geeigneten Java-IDE öffnen.
+### 4. MySQL-Datenbank starten
+Im Terminal in den Ordner mySQLdb wechseln:
+<img width="1115" height="282" alt="image" src="https://github.com/user-attachments/assets/a3034727-f7ca-409f-85dc-3676d82ad669" />
+
+cd .\mySQLdb\
+
+Anschließend die Docker-Container starten:
+<img width="957" height="76" alt="image" src="https://github.com/user-attachments/assets/8f74d4b3-4aed-4fc9-b728-afbf4959a9bd" />
+
+docker compose up -d
+### 5. Backend starten
+Die Main-Klasse des Spring-Boot-Projekts starten.
+<img width="1728" height="372" alt="image" src="https://github.com/user-attachments/assets/bf577c6c-eed8-4f6c-a2b4-77b7ef7178aa" />
+
+### 6. Frontend starten
+Das Frontend öffnen und im Terminal den Entwicklungsserver starten:
+
+npm run dev
+
+<img width="904" height="260" alt="image" src="https://github.com/user-attachments/assets/be00b7c0-9afe-4dd5-90d3-583492dba384" />
+
+
+Anschließend kann der AirPortal über die im Terminal angezeigte Adresse im Browser aufgerufen werden.
+
+## Bilder
+
+
 <img width="1883" height="1032" alt="image" src="https://github.com/user-attachments/assets/a9d0a0d3-2231-465c-a75f-1c501e625014" />
