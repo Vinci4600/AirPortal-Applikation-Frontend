@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api";
+import { getRole } from "../utils/auth";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
@@ -9,10 +10,8 @@ function AircraftPage() {
   const [manufacture, setManufacture] = useState("");
   const [gewicht, setGewicht] = useState("");
 
-  // Token & Rolle prüfen
   const token = localStorage.getItem("token");
-  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const role = payload?.role; // 'USER' oder 'ADMIN'
+  const role = getRole();
 
   //  Alle Aircraft laden (nur wenn eingeloggt)
   const fetchAircrafts = async () => {

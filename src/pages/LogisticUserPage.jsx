@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api";
+import { getRole } from "../utils/auth";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
@@ -12,8 +13,7 @@ function LogisticUserPage() {
 
   //  Token und Rolle
   const token = localStorage.getItem("token");
-  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const role = payload?.role;
+  const role = getRole();
 
   //  GET Users
   const fetchLogisticUsers = async () => {

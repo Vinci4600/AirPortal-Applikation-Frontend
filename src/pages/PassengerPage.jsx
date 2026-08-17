@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api";
+import { getRole } from "../utils/auth";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
@@ -11,8 +12,7 @@ function PassengerPage() {
 
   // Token & Rolle
   const token = localStorage.getItem("token");
-  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const role = payload?.role;
+  const role = getRole();
 
   //  GET
   const fetchPassengers = async () => {

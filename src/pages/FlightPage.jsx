@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api";
+import { getRole } from "../utils/auth";
 import "./components/styles/table.css";
 import "./components/styles/otherstyles.css";
 
@@ -18,18 +19,7 @@ function FlightPage() {
   const [logisticUserId, setLogisticUserId] = useState("");
 
   const token = localStorage.getItem("token");
-
-  //  Token und Rolle prüfen
-  let role = null;
-  try {
-    if (token) {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      role = payload?.role;
-    }
-  } catch (e) {
-    console.error("Token fehlerhaft");
-  }
-  console.log("ROLE:", role);
+  const role = getRole();
 
   //  Flights laden
   const fetchFlights = async () => {
