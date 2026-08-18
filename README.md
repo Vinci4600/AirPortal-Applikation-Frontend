@@ -6,6 +6,10 @@ Die Kommunikation zwischen Frontend und Backend erfolgt über eine REST-API, üb
 
 AirPortal entstand als modulübergreifendes Projekt der Module 295, 294 und 223.
 
+## Voraussetzungen 
+- Sowohl Frontend wie Backend Datei herunterladen
+- Eigenes .env File generieren
+- Docker Desktop auf Windows
 ## Ausführung Airportal
 ### 1. Projekt herunterladen
 Das Repository klonen oder die ZIP-Datei herunterladen. Dabei werden sowohl das Frontend als auch das Backend benötigt.
@@ -28,8 +32,10 @@ Anschließend die Docker-Container starten:
 
 docker compose up -d
 ### 5. Backend starten
-Die Main-Klasse des Spring-Boot-Projekts starten.
-<img width="1728" height="372" alt="image" src="https://github.com/user-attachments/assets/bf577c6c-eed8-4f6c-a2b4-77b7ef7178aa" />
+Die Main-Klasse des Spring-Boot-Projekts starten mit:
+mvn spring-boot:run
+<img width="1185" height="946" alt="image" src="https://github.com/user-attachments/assets/69dc3c87-45b9-4fe2-8eee-3b2a2a30546d" />
+
 
 ### 6. Frontend starten
 Das Frontend öffnen und im Terminal den Entwicklungsserver starten:
