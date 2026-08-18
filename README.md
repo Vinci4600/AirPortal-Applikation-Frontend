@@ -34,8 +34,7 @@ docker compose up -d
 ### 5. Backend starten
 Die Main-Klasse des Spring-Boot-Projekts starten mit:
 mvn spring-boot:run
-<img width="1185" height="946" alt="image" src="https://github.com/user-attachments/assets/69dc3c87-45b9-4fe2-8eee-3b2a2a30546d" />
-
+<img width="1137" height="827" alt="image" src="https://github.com/user-attachments/assets/68c1e1e0-f4e0-44ca-9eb4-2ad7f45abad2" />
 
 ### 6. Frontend starten
 Das Frontend öffnen und im Terminal den Entwicklungsserver starten:
